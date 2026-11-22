@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FX Signal Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">◈</span>
+      <div>
+        <h1>FX Signal Dashboard</h1>
+        <p class="muted">ForexFactory · MarketWatch · TradingEconomics</p>
+      </div>
+    </div>
+
+    <form id="form" class="search" autocomplete="off">
+      <div class="picker">
+        <button id="pickerBtn" type="button" class="picker-btn" aria-haspopup="true" aria-expanded="false" aria-controls="pickerMenu">
+          Markets <span aria-hidden="true">▾</span>
+        </button>
+        <div id="pickerMenu" class="picker-menu" role="menu" hidden></div>
+      </div>
+      <label for="pair" class="sr-only">Pair or commodity</label>
+      <input id="pair" placeholder="EUR/USD, gold, oil…" value="EUR/USD" required />
+      <button id="generate" type="submit">Generate</button>
+    </form>
+
+    <button id="theme" class="ghost" type="button" title="Toggle light/dark" aria-label="Toggle light/dark">◐</button>
+  </header>
+
+  <main>
+    <section id="empty" class="card empty">
+      <h2>Pick a market and press <b>Generate</b></h2>
+      <p class="muted">Use <b>Markets ▾</b> to choose a currency pair, gold, silver or oil, or type one in.
+        The app reads ForexFactory, MarketWatch and TradingEconomics and explains in plain English whether the
+        evidence leans <b>BUY</b>, <b>SELL</b> or <b>no clear edge</b>.</p>
+    </section>
+
+    <section id="loading" class="card empty" hidden>
+      <div class="spinner" aria-hidden="true"></div>
+      <p>Gathering data from ForexFactory, MarketWatch and TradingEconomics…</p>
+    </section>
+
+    <section id="error" class="card error" hidden></section>
+
+    <div id="result" hidden>
+      <section class="grid top">
+        <article class="card signal" id="signalCard"></article>
+        <article class="card why" id="whyCard"></article>
+      </section>
+
+      <section class="grid kpis" id="kpis"></section>
+
+      <section class="card tabs-card">
+        <div class="tabs" role="tablist" aria-label="Data details">
+          <button role="tab" id="tab-chart" aria-controls="panel-chart" aria-selected="true" data-tab="chart">📈 Chart</button>
+          <button role="tab" id="tab-fund" aria-controls="panel-fund" aria-selected="false" data-tab="fund">🏦 Fundamentals</button>
+          <button role="tab" id="tab-cal" aria-controls="panel-cal" aria-selected="false" data-tab="cal">📅 Calendar <span class="count" id="calCount"></span></button>
+          <button role="tab" id="tab-news" aria-controls="panel-news" aria-selected="false" data-tab="news">📰 News <span class="count" id="newsCount"></span></button>
+        </div>
+
+        <div role="tabpanel" id="panel-chart" aria-labelledby="tab-chart" class="panel">
+          <div class="grid two">
+            <div>
+              <div class="panel-head">
+                <h3>Price — last 120 days</h3>
+                <span class="muted small" id="chartNote"></span>
+              </div>
+              <div class="chart-wrap"><canvas id="priceChart" aria-label="Price chart"></canvas></div>
+              <details class="table-view"><summary>Show as table</summary><div id="priceTable"></div></details>
+            </div>
+            <div>
+              <h3>Technicals</h3>
+              <div id="technicals"></div>
+            </div>
+          </div>
+        </div>
+
+        <div role="tabpanel" id="panel-fund" aria-labelledby="tab-fund" class="panel" hidden>
+          <div class="panel-head">
+            <h3>TradingEconomics — outlook &amp; fundamentals</h3>
+            <a id="teLink" class="small" target="_blank" rel="noopener">Open on TradingEconomics ↗</a>
+          </div>
+          <div id="te"></div>
+        </div>
+
+        <div role="tabpanel" id="panel-cal" aria-labelledby="tab-cal" class="panel" hidden>
+          <div class="panel-head">
+            <h3>ForexFactory — economic calendar (this week)</h3>
+            <div class="filters">
+              <label><input type="checkbox" id="ffHighOnly" /> High impact only</label>
+              <label><input type="checkbox" id="ffUpcomingOnly" /> Upcoming only</label>
+            </div>
+          </div>
+          <p class="muted small" id="ffNote"></p>
+          <div id="ff" class="table-scroll"></div>
+        </div>
+
+        <div role="tabpanel" id="panel-news" aria-labelledby="tab-news" class="panel" hidden>
+          <div class="panel-head">
+            <h3>MarketWatch — headlines</h3>
+            <span class="muted small" id="mwTone"></span>
+          </div>
+          <p class="muted small" id="mwNote"></p>
+          <div id="mw"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="muted small">
+    For information only — not financial advice. Signals are rule-based summaries of public data and can be wrong.
+    Always use your own analysis and risk management.
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
